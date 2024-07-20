@@ -7,6 +7,7 @@ export const appwriteConfig = {
     productCollectionId: import.meta.env.VITE_PRODUCT_COLLECTION_ID,
     customerCollectionId: import.meta.env.VITE_CUSTOMER_COLLECTION_ID,
     orderCollectionId: import.meta.env.VITE_ORDER_COLLECTION_ID,
+    userCollectionId: import.meta.env.VITE_USER_COLLECTION_ID,
 
 }
 

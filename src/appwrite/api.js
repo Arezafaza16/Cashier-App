@@ -156,3 +156,20 @@ export async function updateCustomerStatus(customerId) {
         { status: customerId.newStatus }
     );
 }
+
+export const getUserByEmail = async (email, password) => {
+    try {
+        const response = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            [Query.equal('email', email), Query.equal('password', password)]
+        );
+        if (response.documents.length === 0) {
+            throw new Error('Invalid email/password');
+        }
+        return response.documents[0];
+    } catch (error) {
+        console.error('Error fetching user by email:', error);
+        throw error;
+    }
+};

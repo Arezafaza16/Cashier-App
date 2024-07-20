@@ -15,6 +15,11 @@ const LandingPage = () => {
         { icon: <img src={team} className=' w-52 h-52' />, title: 'Data Customer', path: "/cashier/data-customers" },
     ];
 
+    const handleLogOut = () => {
+        sessionStorage.removeItem('loginInfo')
+        window.location.reload();
+    }
+
     return (
         <>
             <div className="w-full h-16 flex bg-[#212529] justify-between">
@@ -22,9 +27,9 @@ const LandingPage = () => {
                     <h2 className="text-white text-xl">Kedai Kopi GG</h2>
                 </div>
                 <div className="flex items-center px-10">
-                    <button className='flex flex-row bg-blue-700 w-20 p-3 text-white rounded-md items-center justify-center'>
+                    <button onClick={handleLogOut} className='flex flex-row bg-blue-700 w-20 p-3 text-white rounded-md items-center justify-center'>
                         <FaUser className="mr-2" />
-                        User
+                        LogOut
                     </button>
                 </div>
             </div>

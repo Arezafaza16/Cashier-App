@@ -30,6 +30,11 @@ const DataCustomers = () => {
         setCurrentPage(1);
     };
 
+    const handleLogOut = () => {
+        sessionStorage.removeItem('loginInfo')
+        window.location.reload();
+    }
+
     const hasNextPage = customers && customers.documents.length === itemsPerPage;
 
     const handleDelete = async (customerId) => {
@@ -90,9 +95,9 @@ const DataCustomers = () => {
                     <h2 className="text-white text-xl">Kedai Kopi GG</h2>
                 </div>
                 <div className="flex items-center px-10">
-                    <button className='flex flex-row bg-blue-700 w-20 p-3 text-white rounded-md items-center justify-center'>
+                    <button onClick={handleLogOut} className='flex flex-row bg-blue-700 w-20 p-3 text-white rounded-md items-center justify-center'>
                         <FaUser className="mr-2" />
-                        User
+                        LogOut
                     </button>
                 </div>
             </div>

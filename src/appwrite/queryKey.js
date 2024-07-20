@@ -4,5 +4,6 @@ export const QueryKeys = Object.freeze({
     getAllCustomers: 'getAllCustomers',
     getAllOrders: 'getAllOrders',
     getOrderById: 'getOrderById',
+    getUserByEmail: 'getUserByEmail',
 
 })

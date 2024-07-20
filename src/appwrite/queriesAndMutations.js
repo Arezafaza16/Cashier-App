@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { addProduct, deleteById, deleteProduct, getAllProducts, getCustomers, getOrderById, getProducts, saveOrder, updateCustomerStatus } from "./api"
+import { addProduct, deleteById, deleteProduct, getAllProducts, getCustomers, getOrderById, getProducts, getUserByEmail, saveOrder, updateCustomerStatus } from "./api"
 import { QueryKeys } from "./queryKey"
 
 
@@ -98,4 +98,12 @@ export const useUpdateCustomerStatus = () => {
             queryClient.invalidateQueries([QueryKeys.getAllCustomers]);
         }
     });
+}
+
+export const useGetUserByEmail = () => {
+    return useQuery({
+        queryKey: [QueryKeys.getUserByEmail],
+        queryFn: () => getUserByEmail(email),
+
+    })
 }

@@ -147,6 +147,11 @@ const DataProduct = () => {
         setSearchTerm(e.target.value);
     };
 
+    const handleLogOut = () => {
+        sessionStorage.removeItem('loginInfo')
+        window.location.reload();
+    }
+
     const filteredProducts = data && data.documents ? data.documents.filter(product =>
         product.product.toLowerCase().includes(searchTerm.toLowerCase())
     ) : [];
@@ -167,9 +172,9 @@ const DataProduct = () => {
                     <h2 className="text-white text-xl">Kedai Kopi GG</h2>
                 </div>
                 <div className="flex items-center px-10">
-                    <button className='flex flex-row bg-blue-700 w-20 p-3 text-white rounded-md items-center justify-center' disabled={isLoading}>
+                    <button onClick={handleLogOut} className='flex flex-row bg-blue-700 w-20 p-3 text-white rounded-md items-center justify-center' disabled={isLoading}>
                         <FaUser className="mr-2" />
-                        User
+                        LogOut
                     </button>
                 </div>
             </div>
