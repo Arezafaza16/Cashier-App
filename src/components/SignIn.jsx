@@ -31,7 +31,7 @@ const SignIn = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+        <div className="min-h-screen flex items-center justify-center bg-slate-600">
             <div className="bg-white p-10 rounded-xl shadow-2xl w-full max-w-md">
                 <h2 className="text-3xl font-extrabold mb-6 text-center text-gray-900">Sign In</h2>
                 <form onSubmit={handleSubmit}>
@@ -55,7 +55,7 @@ const SignIn = () => {
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                     </div>
-                    <button type="submit" className="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Sign In</button>
+                    <button type="submit" className="w-full bg-slate-600 text-white py-3 rounded-lg hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Sign In</button>
                 </form>
             </div>
         </div>
