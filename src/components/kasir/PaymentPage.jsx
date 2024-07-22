@@ -96,16 +96,12 @@ const PaymentPage = () => {
                 return;
             }
 
-            console.log('selectedProduct:', selectedProduct);
-            console.log('quantities:', quantities);
-
             // Update stock akhir untuk setiap produk
             const updatedProducts = selectedProduct.map(product => ({
                 ...product,
                 stock_akhir: product.stock_akhir - (parseInt(quantities[product.$id]) || 0)
             }));
 
-            console.log('updatedProducts:', updatedProducts);
 
             // Simpan order dan update stok produk
             await saveOrderMutation.mutateAsync({

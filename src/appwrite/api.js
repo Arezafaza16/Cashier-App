@@ -4,7 +4,6 @@ import { appwriteConfig, databases } from "./config";
 
 export async function getProducts(itemsPerPage, currentPage) {
     try {
-        console.log(currentPage, "currentPage");
         const products = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.productCollectionId,
@@ -81,14 +80,12 @@ export async function saveOrder(customerData, cartItems, updatedProducts) {
 }
 
 export async function getCustomers(itemsPerPage, currentPage) {
-    console.log(itemsPerPage, currentPage, "itemsPerPage, currentPage");
     const customers = await databases.listDocuments(
         appwriteConfig.databaseId,
         appwriteConfig.customerCollectionId,
         [Query.orderDesc('$createdAt'), Query.limit(itemsPerPage), Query.offset(currentPage - 1)]
     );
 
-    console.log(customers, "customersApi");
     return customers;
 }
 
@@ -104,7 +101,6 @@ export async function getOrderById(customerId) {
 export async function deleteById(customerId) {
 
     const orders = await getOrderById(customerId)
-    console.log(orders);
 
     orders.documents.map(async (order) => (
         await databases.deleteDocument(
@@ -123,7 +119,6 @@ export async function deleteById(customerId) {
 }
 
 export async function addProduct(data) {
-    console.log(data, "addProductApi");
     const product = await databases.createDocument(
         appwriteConfig.databaseId,
         appwriteConfig.productCollectionId,
@@ -148,7 +143,6 @@ export async function deleteProduct(productId) {
 }
 
 export async function updateCustomerStatus(customerId) {
-    // console.log(customerId);
     await databases.updateDocument(
         appwriteConfig.databaseId,
         appwriteConfig.customerCollectionId,
@@ -173,3 +167,19 @@ export const getUserByEmail = async (email, password) => {
         throw error;
     }
 };
+
+export async function updateProduct(productId, data) {
+    await databases.updateDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.productCollectionId,
+        productId,
+        {
+            product: data.product,
+            kategori: data.kategori,
+            harga_jual_satuan: data.harga_jual_satuan,
+            harga_pokok_satuan: data.harga_pokok_satuan,
+            stock: data.stock,
+            stock_akhir: data.stock_akhir,
+        }
+    )
+}

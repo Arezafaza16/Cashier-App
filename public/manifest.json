@@ -1,0 +1,27 @@
+{
+    "short_name": "Cashier App",
+    "name": "Point of Sale App",
+    "icons": [
+      {
+        "src": "cashier2.png",
+        "sizes": "64x64",
+        "type": "image/png"
+      },
+      {
+        "src": "cashier144.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      }
+    ],
+    "screenshots": [
+      {
+        "src": "screenshot320.jpg",
+        "sizes": "320x320",
+        "type": "image/png"
+      }
+    ],
+    "start_url": "/sign-in",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff"
+  }

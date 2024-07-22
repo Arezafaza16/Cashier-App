@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { deleteById } from '../../appwrite/api';
 import { useReactToPrint } from 'react-to-print';
 import * as XLSX from 'xlsx';
+import { IoChevronBackOutline } from 'react-icons/io5';
 
 const DataCustomers = () => {
     const [customerList, setCustomerList] = useState([]);
@@ -67,6 +68,7 @@ const DataCustomers = () => {
         }
     };
 
+
     const handleExportPDF = useReactToPrint({
         content: () => tableRef.current,
         documentTitle: 'customers',
@@ -101,6 +103,8 @@ const DataCustomers = () => {
                     </button>
                 </div>
             </div>
+
+            <IoChevronBackOutline onClick={() => navigate('/')} className=' m-5 font-bold text-4xl md:text-5xl bg-slate-50 hover:bg-slate-200 text-black border p-2 rounded-full' />
 
             <div className="p-10">
                 <div className="flex flex-row mb-4">

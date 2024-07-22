@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { addProduct, deleteById, deleteProduct, getAllProducts, getCustomers, getOrderById, getProducts, getUserByEmail, saveOrder, updateCustomerStatus } from "./api"
+import { addProduct, deleteById, deleteProduct, getAllProducts, getCustomers, getOrderById, getProducts, getUserByEmail, saveOrder, updateCustomerStatus, updateProduct } from "./api"
 import { QueryKeys } from "./queryKey"
 
 
@@ -9,7 +9,6 @@ export const useGetAllProducts = (itemsPerPage, currentPage) => {
             queryKey: [QueryKeys.getAllProducts, itemsPerPage, currentPage],
             queryFn: () => getProducts(itemsPerPage, currentPage),
         })
-        console.log(data, "data");
         return data;
     } catch (error) {
         console.log(error);
@@ -23,7 +22,6 @@ export const useGetAllProductsChart = () => {
             queryKey: [QueryKeys.getAllProducts,],
             queryFn: () => getAllProducts(),
         })
-        console.log(data, "data");
         return data;
     } catch (error) {
         console.log(error);
@@ -106,4 +104,14 @@ export const useGetUserByEmail = () => {
         queryFn: () => getUserByEmail(email),
 
     })
+}
+
+export const useUpdateProduct = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ id, data }) => updateProduct(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries([QueryKeys.getAllProducts]);
+        }
+    });
 }

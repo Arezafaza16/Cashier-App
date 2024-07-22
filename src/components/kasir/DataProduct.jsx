@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { FaUser, FaPlus, FaTrash, FaEdit, FaSearch, FaFilePdf, FaCheck } from "react-icons/fa";
+import { IoChevronBackOutline } from "react-icons/io5";
 import { TbPlayerSkipBackFilled, TbPlayerSkipForwardFilled, TbPlayerTrackNextFilled, TbPlayerTrackPrevFilled } from "react-icons/tb";
 import { FaFileExcel } from "react-icons/fa";
-import { useAddProduct, useGetAllProducts, useDeleteProduct } from '../../appwrite/queriesAndMutations';
+import { useAddProduct, useGetAllProducts, useDeleteProduct, useUpdateProduct } from '../../appwrite/queriesAndMutations';
 import { formatRupiah } from '../../utils/rupiahFormatter';
 import ReactToPrint from 'react-to-print';
 import * as XLSX from 'xlsx';
+import { useNavigate } from 'react-router-dom';
 
 const DataProduct = () => {
     const addProduct = useAddProduct();
     const deleteProduct = useDeleteProduct();
+    const updateProduct = useUpdateProduct();
+    const navigate = useNavigate()
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
     const [showCheckboxes, setShowCheckboxes] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(15);
+    const [itemsPerPage, setItemsPerPage] = useState(50);
     const [newProduct, setNewProduct] = useState({
         product: '',
         kategori: '',
@@ -24,6 +29,7 @@ const DataProduct = () => {
         stock: '',
         stock_akhir: ''
     });
+    const [currentProductId, setCurrentProductId] = useState(null);
     const { data, isLoading: isLoadingProducts, isError } = useGetAllProducts(itemsPerPage, currentPage);
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -111,19 +117,52 @@ const DataProduct = () => {
             stock_akhir: parseInt(newProduct.stock_akhir)
         };
 
-        console.log(data, 'dataAdd');
+        if (isEditMode) {
+            updateProduct.mutate({ id: currentProductId, data }, {
+                onSuccess: () => {
+                    setIsLoading(false); // Set loading state to false
+                },
+                onError: (error) => {
+                    console.error('Error memperbarui produk:', error);
+                    setIsLoading(false); // Set loading state to false
+                }
+            });
+        } else {
+            addProduct.mutate(data, {
+                onSuccess: () => {
+                    setIsLoading(false); // Set loading state to false
+                },
+                onError: (error) => {
+                    console.error('Error menambahkan produk:', error);
+                    setIsLoading(false); // Set loading state to false
+                }
+            });
+        }
 
-        addProduct.mutate(data, {
-            onSuccess: (data) => {
-                console.log('Produk baru berhasil ditambahkan:', data);
-                setIsLoading(false); // Set loading state to false
-            },
-            onError: (error) => {
-                console.error('Error menambahkan produk:', error);
-                setIsLoading(false); // Set loading state to false
-            }
-        });
         setIsPopupVisible(false);
+        setIsEditMode(false);
+        setNewProduct({
+            product: '',
+            kategori: '',
+            harga_jual_satuan: '',
+            harga_pokok_satuan: '',
+            stock: '',
+            stock_akhir: ''
+        });
+    };
+
+    const handleEditProduct = (product) => {
+        setNewProduct({
+            product: product.product,
+            kategori: product.kategori,
+            harga_jual_satuan: formatRupiah(product.harga_jual_satuan),
+            harga_pokok_satuan: formatRupiah(product.harga_pokok_satuan),
+            stock: product.stock,
+            stock_akhir: product.stock_akhir
+        });
+        setCurrentProductId(product.$id);
+        setIsEditMode(true);
+        setIsPopupVisible(true);
     };
 
     const handleDeleteProducts = () => {
@@ -131,7 +170,6 @@ const DataProduct = () => {
         selectedProducts.forEach(productId => {
             deleteProduct.mutate(productId, {
                 onSuccess: () => {
-                    console.log(`Produk dengan ID ${productId} berhasil dihapus`);
                     setIsLoading(false); // Set loading state to false
                 },
                 onError: (error) => {
@@ -164,7 +202,6 @@ const DataProduct = () => {
     if (isError) {
         return <div>There is an Error</div>
     }
-    console.log(data);
     return (
         <>
             <div className="w-full h-16 flex bg-[#212529] justify-between">
@@ -178,6 +215,8 @@ const DataProduct = () => {
                     </button>
                 </div>
             </div>
+
+            <IoChevronBackOutline onClick={() => navigate('/')} className=' m-5 font-bold text-4xl md:text-5xl bg-slate-50 hover:bg-slate-200 text-black border p-2 rounded-full' />
 
             <div className="p-10">
                 <div className="flex flex-row mb-4">
@@ -316,7 +355,7 @@ const DataProduct = () => {
                                 <td className="border p-2">{formatRupiah(product.harga_pokok_satuan)}</td>
                                 <td className="border p-2">{product.stock}</td>
                                 <td className="border p-2">{product.stock_akhir}</td>
-                                <td className="border p-2"><button className='bg-slate-50 hover:bg-slate-200 text-black p-2 rounded' disabled={isLoading}><FaEdit /> Edit</button></td>
+                                <td className="border p-2"><button className='bg-slate-50 hover:bg-slate-200 text-black p-2 rounded' disabled={isLoading} onClick={() => handleEditProduct(product)}><FaEdit /> Edit</button></td>
                             </tr>
                         ))}
                     </tbody>
@@ -324,11 +363,17 @@ const DataProduct = () => {
             </div>
 
             {isPopupVisible && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-10 rounded shadow-lg w-1/2">
-                        <h2 className="text-2xl mb-6">Tambah Produk Baru</h2>
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+                    <div className="bg-white p-6 md:p-10 rounded-xl shadow-lg w-full max-w-lg mx-4 overflow-y-auto max-h-full">
+                        <button
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                            onClick={() => setIsPopupVisible(false)}
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-2xl font-bold mb-6">Tambah Produk Baru</h2>
                         <form>
-                            <div className="mb-6">
+                            <div className="mb-4">
                                 <label className="block text-gray-700 mb-2">Nama Produk</label>
                                 <input
                                     type="text"
@@ -339,7 +384,7 @@ const DataProduct = () => {
                                     disabled={isLoading}
                                 />
                             </div>
-                            <div className="mb-6">
+                            <div className="mb-4">
                                 <label className="block text-gray-700 mb-2">Kategori</label>
                                 <select
                                     name="kategori"
@@ -354,7 +399,7 @@ const DataProduct = () => {
                                     <option value="kopi">Kopi</option>
                                 </select>
                             </div>
-                            <div className="mb-6">
+                            <div className="mb-4">
                                 <label className="block text-gray-700 mb-2">Harga Jual / Satuan</label>
                                 <input
                                     type="text"
@@ -365,7 +410,7 @@ const DataProduct = () => {
                                     disabled={isLoading}
                                 />
                             </div>
-                            <div className="mb-6">
+                            <div className="mb-4">
                                 <label className="block text-gray-700 mb-2">Harga Pokok / Satuan</label>
                                 <input
                                     type="text"
@@ -376,7 +421,7 @@ const DataProduct = () => {
                                     disabled={isLoading}
                                 />
                             </div>
-                            <div className="mb-6">
+                            <div className="mb-4">
                                 <label className="block text-gray-700 mb-2">Stock</label>
                                 <input
                                     type="number"
@@ -387,7 +432,7 @@ const DataProduct = () => {
                                     disabled={isLoading}
                                 />
                             </div>
-                            <div className="mb-6">
+                            <div className="mb-4">
                                 <label className="block text-gray-700 mb-2">Stock Akhir</label>
                                 <input
                                     type="number"

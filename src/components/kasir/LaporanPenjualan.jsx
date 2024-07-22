@@ -5,17 +5,19 @@ import { useGetAllProductsChart } from '../../appwrite/queriesAndMutations'
 import { FaUser } from 'react-icons/fa'
 import { formatRupiah } from '../../utils/rupiahFormatter'
 import dayjs from 'dayjs' // Pastikan dayjs diimpor di sini
+import { useNavigate } from 'react-router-dom'
+import { IoChevronBackOutline } from 'react-icons/io5'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const Dashboard = () => {
     const { data, isLoading, error } = useGetAllProductsChart()
     const [selectedProduct, setSelectedProduct] = useState(null)
+    const navigate = useNavigate()
     const [timeFrame, setTimeFrame] = useState('weekly') // State untuk memilih mingguan atau bulanan
 
     useEffect(() => {
         if (data) {
-            console.log('Data:', data.documents)
         }
     }, [data])
 
@@ -50,12 +52,10 @@ const Dashboard = () => {
     const labels = filteredData.map(product => product.product)
     const selling = filteredData.map(product => {
         const sell = product.stock - product.stock_akhir
-        console.log(`Product: ${product.product}, Stock: ${product.stock}, Stock Akhir: ${product.stock_akhir}, Selling: ${sell}`)
         return sell
     })
     const salesData = filteredData.map((product, index) => {
         const sales = product.harga_jual_satuan * selling[index]
-        console.log(`Product: ${product.product}, Harga Jual: ${product.harga_jual}, Selling: ${selling[index]}, Sales: ${sales}`)
         return sales
     })
 
@@ -63,9 +63,6 @@ const Dashboard = () => {
     const OutCome = filteredData.map(product => product.harga_jual_satuan * product.stock)
     const totalOutCome = OutCome.reduce((acc, curr) => acc + curr, 0)
 
-    console.log('Labels:', labels)
-    console.log('Selling:', selling)
-    console.log('Sales Data:', salesData)
 
     const barData = {
         labels,
@@ -115,10 +112,13 @@ const Dashboard = () => {
                     </button>
                 </div>
             </div>
+
+
             <div className="dashboard">
                 <div className="header mb-10">
                     <h1 className=' font-bold text-4xl'>Data dan Laporan Penjualan</h1>
                 </div>
+                <IoChevronBackOutline onClick={() => navigate('/')} className=' m-5 font-bold text-4xl md:text-5xl bg-slate-50 hover:bg-slate-200 text-black border p-2 rounded-full' />
                 <div className="overview flex items-center justify-center my-10">
                     <div className="card mx-auto border">
                         <h3>Total penjualan keseluruhan</h3>

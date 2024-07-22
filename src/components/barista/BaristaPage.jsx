@@ -55,7 +55,6 @@ const BaristaPage = () => {
     };
 
     const handleStatusChange = (customerId, newStatus) => {
-        // console.log(customerId, "newStatus");
         updateStatus({ customerId, newStatus }, {
             onSuccess: () => {
                 // Update status in the local state
