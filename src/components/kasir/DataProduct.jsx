@@ -393,7 +393,7 @@ const DataProduct = () => {
                                     className="border w-full p-3 rounded"
                                     disabled={isLoading}
                                 >
-                                    <option value="" selected disabled>Pilih Kategori</option>
+                                    <option value="" disabled>Pilih Kategori</option>
                                     <option value="makanan">Makanan</option>
                                     <option value="minuman">Minuman</option>
                                     <option value="kopi">Kopi</option>
@@ -446,7 +446,17 @@ const DataProduct = () => {
                             <div className="flex justify-end">
                                 <button
                                     type="button"
-                                    onClick={() => setIsPopupVisible(false)}
+                                    onClick={() => {
+                                        setNewProduct({
+                                            product: '',
+                                            kategori: '',
+                                            harga_jual_satuan: '',
+                                            harga_pokok_satuan: '',
+                                            stock: '',
+                                            stock_akhir: ''
+                                        })
+                                        setIsPopupVisible(false)
+                                    }}
                                     className="bg-gray-500 text-white p-3 rounded mr-3"
                                     disabled={isLoading}
                                 >
